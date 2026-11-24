@@ -1,0 +1,11 @@
+kelly: {file: kelly.md, aliases: [凯利, kelly公式, 仓位]}
+garch: {file: garch.md, aliases: [波动率, volatility, 止损]}
+var: {file: var.md, aliases: [value_at_risk, 风险价值, 在险价值]}
+walk_forward: {file: walk_forward.md, aliases: [walk-forward, 样本外, 滚动前推, oos]}
+luck_test: {file: luck_test.md, aliases: [运气检验, 置换检验, permutation, deflated_sharpe, dsr, fdr]}
+monte_carlo: {file: monte_carlo.md, aliases: [蒙特卡洛, mc]}
+cointegration: {file: cointegration.md, aliases: [协整, pairs, 配对]}
+sharpe: {file: sharpe.md, aliases: [夏普, sharpe_ratio]}
+momentum: {file: momentum.md, aliases: [动量, tsmom]}
+mean_reversion: {file: mean_reversion.md, aliases: [均值回归]}
+costs: {file: costs.md, aliases: [成本, 手续费, 滑点]}
