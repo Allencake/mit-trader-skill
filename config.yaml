@@ -1,0 +1,53 @@
+# mit-trader 配置文件：标的、成本、检验门槛、风控上限都在这里改。
+# 所有金额按账户币种（默认 USD）。这里的数字是默认参数，不是收益或胜率。
+
+mode: paper            # 本版本只支持 paper（模拟账本），不接真实券商
+account:
+  starting_equity: 100000   # 模拟账本初始资金（示例）
+
+data:
+  years: 10                 # 回测最多拉多少年日线
+  crypto_exchange: okx      # ccxt 公共行情，不需要 API key；可改 binance / kraken / coinbase（按你所在地区能访问的来）
+  home: ~/.mit-trader       # 缓存、研究结果、交易单、模拟账本都存这里
+
+universe:
+  stocks_etfs: [SPY, QQQ, IWM, GLD, TLT, AAPL, MSFT, NVDA]
+  crypto: [BTC/USDT, ETH/USDT, SOL/USDT]
+  pairs:                    # 配对交易候选（第 12 讲 协整）
+    - [KO, PEP]
+    - [GLD, GDX]
+    - [BTC/USDT, ETH/USDT]
+
+costs:                      # 单边成本，按成交额计
+  stock_fee_bps: 1
+  stock_slippage_bps: 2
+  crypto_fee_bps: 10
+  crypto_slippage_bps: 5
+  stress_multiplier: 2      # 第三关：成本翻倍后还要活着
+
+research:
+  allow_short: false        # false = 只做多/空仓
+  walk_forward_folds: 5
+  min_train_years: 3
+  gate_oos_sharpe: 0.5      # 第一关：样本外年化 Sharpe（未扣成本）下限
+  gate_fold_hit_ratio: 0.6  # 第一关：至少多少比例的样本外分段是正收益
+  permutations: 2000        # 第二关：置换检验次数
+  gate_fdr_q: 0.10          # 第二关：置换 p 值做 Benjamini-Hochberg 校正，错误发现率上限
+  gate_dsr: 0.95            # 第二关：deflated Sharpe 概率下限
+  gate_net_sharpe: 0.3      # 第三关：扣成本后样本外 Sharpe 下限（成本翻倍时要求 > 0）
+
+today:
+  garch_window_days: 1000
+  stop_sigma_mult: 2.0      # 止损 = 入场价 ± k × GARCH 预测波动 × √持有天数
+  holding_days: 5
+  mc_paths: 10000           # 蒙特卡洛路径数
+  kelly_fraction: 0.25      # 只用四分之一 Kelly
+
+limits:                     # 你的上限，today 会逐条检查
+  max_position_pct: 0.10    # 单笔最多占账户
+  max_risk_per_trade_pct: 0.01   # 单笔打到止损最多亏账户多少
+  max_open_positions: 5
+  max_gross_exposure_pct: 0.60
+  var_confidence: 0.99
+  max_portfolio_var_pct: 0.02    # 组合一日 VaR 上限
+  daily_loss_limit_pct: 0.03     # 当日模拟账本亏损超过这个比例，今天不出新单
